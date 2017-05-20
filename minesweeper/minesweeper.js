@@ -144,7 +144,7 @@ function draw(p) {
     p.textSize(50);
     for (var i = 0; i <= 14; i++){
         for (var j = 0; j <= 14; j++){
-            p.fill(209, 207, 207);
+
             p.rect(8+(i*52), 8+(j*52), 200, 200);
             if (tiles[i][j][0] === 0 && tiles[i][j][1]){
                 p.fill(240, 237, 237);
