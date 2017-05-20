@@ -1,38 +1,38 @@
 <!DOCTYPE html>
- +<html>
- +<head>
- +	<title>Minesweeper!</title>
- +	<script src="../processing.min.js"></script>
- +	<script src="minesweeper.js"></script>
- +</head>
- +<body>
- +	<h1>Minesweeper:</h1>
- +	<p><canvas id="canvas1" width="400" height="400"></canvas></p>
- +
- +	<script id="script1" type="text/javascript">
- +
- +	// Simple way to attach js code to the canvas is by using a function
- +	function sketchProc(processing) {
- +
- +		processing.size(400,400);
- +
- +		processing.draw = function () { 
- +			draw(processing);
- +		};
- +		processing.mouseClicked = function () { 
- +			mouseClicked(processing);
- +		};	
- +		processing.keyPressed = function () { 
- +			keyPressed(processing);
- +		};	
- +	}
- +
- +	var canvas = document.getElementById("canvas1");
- +	// attaching the sketchProc function to the canvas
- +	var p = new Processing(canvas, sketchProc);
- +	// p.exit(); to detach it
- +	</script>
- +</body>
- +</html>
- +
+ <html>
+ <head>
+ 	<title>Minesweeper!</title>
+ 	<script src="../processing.min.js"></script>
+ 	<script src="minesweeper.js"></script>
+ </head>
+ <body>
+ 	<h1>Minesweeper:</h1>
+ 	<p><canvas id="canvas1" width="400" height="400"></canvas></p>
+ 
+ 	<script id="script1" type="text/javascript">
+ 
+ 	// Simple way to attach js code to the canvas is by using a function
+	function sketchProc(processing) {
+
+		processing.size(400,400);
+
+		processing.draw = function () { 
+			draw(processing);
+		};
+		processing.mouseClicked = function () { 
+			mouseClicked(processing);
+		};	
+ 		processing.keyPressed = function () { 
+ 			keyPressed(processing);
+ 		};	
+ 	}
+ 
+ 	var canvas = document.getElementById("canvas1");
+ 	// attaching the sketchProc function to the canvas
+ 	var p = new Processing(canvas, sketchProc);
+ 	// p.exit(); to detach it
+ 	</script>
+ </body>
+ </html>
+ 
 
