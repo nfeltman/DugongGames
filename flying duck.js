@@ -1,5 +1,5 @@
 // THIS IS SOMETHING RANDOM MY FRIEND MADE, NOT ME
-draw = function() {
+draw = function(p) {
     p.background(81, 255, 255);// sets the background color
     p.fill(255, 162, 0);
     p.ellipse(370, 20, 90, 90);
