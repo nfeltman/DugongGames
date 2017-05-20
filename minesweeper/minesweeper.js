@@ -8,7 +8,7 @@
      You win by revealing all non-mines and flagging all mines.
  */
  var mineNum = 25; // Change this to change the number of mines to any number between 0 and 225.
- 
+
  var tiles = [];
  var flagged = [];
  var mineRevealed = 0;
@@ -231,16 +231,16 @@ for (var i = 0; i <= 14; i++){
      }
  }
  
- function mouseClicked(p){ 
+ function mouseClicked(x,y){ 
      if (!mineRevealed){
-         reveal(Math.floor((p.mouseX-4)/26), Math.floor((p.mouseY-4)/26));
+         reveal(Math.floor((x-4)/26), Math.floor((y-4)/26));
      }
  }
  
- function keyPressed(p) {
+ function keyPressed(x,y) {
      if (!mineRevealed){
-         var newX = Math.floor((p.mouseX-4)/26);
-         var newY = Math.floor((p.mouseY-4)/26);
+         var newX = Math.floor((x-4)/26);
+         var newY = Math.floor((y-4)/26);
          if (!flagged[newX][newY]){
              flagged[newX][newY] = true;
          }
