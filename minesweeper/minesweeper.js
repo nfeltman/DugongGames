@@ -141,40 +141,40 @@ function draw(p) {
     var unflaggedMines = mineNum;
     var flaggedSquares = mineNum;
     var revealedSquares = 0;
-    p.textSize(25);
+    p.textSize(50);
     for (var i = 0; i <= 14; i++){
         for (var j = 0; j <= 14; j++){
             p.fill(209, 207, 207);
-            p.rect(4+(i*26), 4+(j*26), 100, 100);
+            p.rect(8+(i*52), 8+(j*52), 200, 200);
             if (tiles[i][j][0] === 0 && tiles[i][j][1]){
                 p.fill(240, 237, 237);
-                p.rect(4+(i*26), 4+(j*26), 100, 100);
+                p.rect(8+(i*52), 8+(j*52), 200, 200);
             } if (tiles[i][j][0] === 1 && tiles[i][j][1]){
                 p.fill(79, 79, 247);
-                p.text("1", 10+(i*26), 26.5+(j*26));
+                p.text("1", 20+(i*52), 53+(j*52));
             } if (tiles[i][j][0] === 2 && tiles[i][j][1]){
                 p.fill(8, 107, 19);
-                p.text("2", 10+(i*26), 26.5+(j*26));
+                p.text("2", 20+(i*52), 53+(j*52));
             } if (tiles[i][j][0] === 3 && tiles[i][j][1]){
                 p.fill(255, 0, 0);
-                p.text("3", 10+(i*26), 26.5+(j*26));
+                p.text("3", 20+(i*52), 53+(j*52));
             } if (tiles[i][j][0] === 4 && tiles[i][j][1]){
                 p.fill(19, 4, 133);
-                p.text("4", 10+(i*26), 26.5+(j*26));
+                p.text("4", 20+(i*52), 53+(j*52));
             } if (tiles[i][j][0] === 5 && tiles[i][j][1]){
                 p.fill(138, 4, 31);
-                p.text("5", 10+(i*26), 27+(j*26));
+                p.text("5", 20+(i*52), 54+(j*52));
             } if (tiles[i][j][0] === 6 && tiles[i][j][1]){
                 p.fill(14, 208, 242);
-                p.text("6", 10+(i*26), 26.5+(j*26));
+                p.text("6", 20+(i*52), 53+(j*52));
             } if (tiles[i][j][0] === 7 && tiles[i][j][1]){
                 p.fill(0, 0, 0);
-                p.text("7", 10+(i*26), 26.5+(j*26));
+                p.text("7", 20+(i*52), 53+(j*52));
             } if (tiles[i][j][0] === 8 && tiles[i][j][1]){
                 p.fill(168, 166, 168);
-                p.text("8", 10+(i*26), 26.5+(j*26));
+                p.text("8", 20+(i*52), 53+(j*52));
             } if (tiles[i][j][0] === "M" && tiles[i][j][1]){
-                drawMine(p,mineColor, 4+(i*26), 4+(j*26));
+                drawMine(p, mineColor, 8+(i*52), 8+(j*52));
             }
             var x = 4+(i*26);
             var y = 4+(j*26);
