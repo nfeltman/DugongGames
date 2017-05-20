@@ -19,8 +19,8 @@ draw = function() {
     p.ellipse(308, 50, 30, 5);
     p.fill(216, 245, 0);
     
-    var randomX = random(0, 400);// makes "randomX and "randomY" move randomly across the screen
-    var randomY = random(0, 400);
+    var randomX = Math.random(0, 400);// makes "randomX and "randomY" move randomly across the screen
+    var randomY = Math.random(0, 400);
     p.ellipse(randomX, randomY, 29, 29);fill(0, 0, 0);// changes the size and/or color of the duck
     p.ellipse(randomX - 7, randomY - 4, 10, 10);// change the sze and color of the eyes
     p.ellipse(randomX + 6, randomY - 4, 10, 10);fill(255, 140, 0);
