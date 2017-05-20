@@ -176,16 +176,16 @@ function draw(p) {
             } if (tiles[i][j][0] === "M" && tiles[i][j][1]){
                 drawMine(p, mineColor, 8+(i*52), 8+(j*52));
             }
-            var x = 4+(i*26);
-            var y = 4+(j*26);
+            var x = 8+(i*52);
+            var y = 8+(j*52);
             if (flagged[i][j] && !tiles[i][j][1]){
                 p.noStroke();
                 p.fill(0, 0, 0);
-                p.rect(x+12.9, y+5.25, 2.5, 15);
-                p.rect(x+10, y+18.75, 8.5, 2.5);
-                p.rect(x+8, y+21.25, 13, 2.5);
+                p.rect(x+25.8, y+10.5, 5, 30);
+                p.rect(x+20, y+37.5, 17, 5);
+                p.rect(x+16, y+42.5, 26, 5);
                 p.fill(255, 0, 0);
-                p.triangle(x+6, y+9.5, x+16, y+3.75, x+16, y+15.25);
+                p.triangle(x+12, y+19, x+32, y+7.5, x+32, y+30.5);
                 p.stroke(0, 0, 0);
                 flaggedSquares -= 1;
                 if (tiles[i][j][0] === "M"){
@@ -211,10 +211,10 @@ function draw(p) {
                 if ((Math.abs(mineRevealed)/10000) % 2 === 0){
                     reveal(i, j);
                 }
-                p.textSize(100);
+                p.textSize(200);
                 p.fill(255, 0, 0);
-                p.text("You Win!", 4, 188);
-                p.textSize(25);
+                p.text("You Win!", 8, 376);
+                p.textSize(50);
             }
             if (tiles[i][j][1] || flagged[i][j]){
                 revealedSquares += 1;
@@ -222,10 +222,10 @@ function draw(p) {
         }
     }
     p.fill(0, 0, 0);
-    p.rect(0, 0, 400, 4);
-    p.rect(0, 0, 4, 400);
-    p.rect(0, 394, 400, 6);
-    p.rect(394, 0, 6, 400);
+    p.rect(0, 0, 800, 8);
+    p.rect(0, 0, 8, 800);
+    p.rect(0, 788, 800, 12);
+    p.rect(788, 0, 12, 800);
     if (unflaggedMines === flaggedSquares && !unflaggedMines && revealedSquares === 225){
         mineRevealed = -Number.MAX_VALUE;
     }
@@ -233,14 +233,14 @@ function draw(p) {
 
 function mouseClicked(p){ 
     if (!mineRevealed){
-        reveal(Math.floor((p.mouseX-4)/26), Math.floor((p.mouseY-4)/26));
+        reveal(Math.floor((p.mouseX-8)/52), Math.floor((p.mouseY-8)/52));
     }
 }
 
 function keyPressed(p) {
     if (!mineRevealed){
-        var newX = Math.floor((p.mouseX-4)/26);
-        var newY = Math.floor((p.mouseY-4)/26);
+        var newX = Math.floor((p.mouseX-8)/52);
+        var newY = Math.floor((p.mouseY-8)/52));
         if (!flagged[newX][newY]){
             flagged[newX][newY] = true;
         }
