@@ -118,20 +118,20 @@ function drawMine(p,bgColor, x, y){
     if (bgColor){
         p.fill(235, 148, 148);
     }
-    p.rect(x, y, 26, 26);
+    p.rect(x, y, 52, 52);
     p.noStroke();
     p.fill(0, 0, 0);
-    p.ellipse(x+13, y+13.5, 12, 12);
-    p.rect(x+4.3, y+11.5, 17.5, 2);
-    p.rect(x+11.5, y+4.4, 2, 18.5);
+    p.ellipse(x+26, y+27, 24, 24);
+    p.rect(x+8.6, y+23, 35, 4);
+    p.rect(x+23, y+8.8, 4, 37);
     p.stroke(0, 0, 0);
     p.strokeWeight(2);
-    p.line(x+7, y+7, x+19.5, y+19.5);
-    p.line(x+19.5, y+7, x+7, y+19.5);
+    p.line(x+14, y+14, x+39, y+39);
+    p.line(x+39, y+14, x+14, y+39);
     p.strokeWeight(1);
     p.noStroke();
     p.fill(255, 255, 255 );
-    p.ellipse(x+11, y+11, 4, 4);
+    p.ellipse(x+22, y+22, 8, 8);
     p.stroke(0, 0, 0);
 }
 
