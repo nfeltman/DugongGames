@@ -13,7 +13,8 @@
  
  	// Simple way to attach js code to the canvas is by using a function
 	function sketchProc(processing) {
-		processing.size(400,400);
+		processing.size(800, 800);
+		processing.scale(2.0);
 		processing.draw = function () { 
 			draw(processing);
 		};
