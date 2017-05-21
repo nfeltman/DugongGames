@@ -19,8 +19,14 @@ function draw(p) {
     p.ellipse(308, 50, 30, 5);
     p.fill(216, 245, 0);
     
-    var randomX = Math.random(0, 400);// makes "randomX and "randomY" move randomly across the screen
-    var randomY = Math.random(0, 400);
+    // note that Math.random picks a float between 0 and 1, uniformly
+    // makes "randomX and "randomY" move randomly across the screen
+    var randomX = Math.random()*400;
+    var randomY = Math.random()*400;
+    
+    // access the console in chrome with "ctrl+shift+j"
+    //console.log(randomX+" "+randomY);
+    
     p.ellipse(randomX, randomY, 29, 29);
     p.fill(0, 0, 0);// changes the size and/or color of the duck
     p.ellipse(randomX - 7, randomY - 4, 10, 10);// change the sze and color of the eyes
@@ -28,3 +34,11 @@ function draw(p) {
     p.fill(255, 140, 0);
     p.rect(randomX +  0, randomY - 0, 13, 9);// changes the size and/or color of the beak
 };
+
+function mouseClicked() {
+    //do nothing
+}
+
+function keyPressed() {
+    //do nothing
+}
