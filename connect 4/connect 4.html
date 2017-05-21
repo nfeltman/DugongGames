@@ -1,1 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Connect 4</title>
+	<script src="../processing.min.js"></script>
+	<script src="connect 4.js"></script>
+</head>
+<body>
+	<h1>Connect 4:</h1>
+	<p><canvas id="canvas3" width="800" height="800"></canvas></p>
 
+	<script id="script3" type="text/javascript">
+	// Simple way to attach js code to the canvas is by using a function
+	function sketchProc(processing) {
+		processing.size(800, 800);
+		processing.scale(2.0);
+		processing.draw = function () { 
+			draw(processing);
+		};
+		processing.mouseClicked = function () { 
+			mouseClicked(p.mouseX/2.0, p.mouseY/2.0);
+		};	
+		processing.keyPressed = function () { 
+			keyPressed(p.mouseX/2.0, p.mouseY/2.0);
+		};	
+	}
+	var canvas = document.getElementById("canvas3");
+	// attaching the sketchProc function to the canvas
+	var p = new Processing(canvas, sketchProc);
+	// p.exit(); to detach it
+	</script>
+</body>
+</html>
