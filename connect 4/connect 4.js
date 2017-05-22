@@ -1,10 +1,11 @@
-p.noStroke();
 var holes = [[" ", " ", " ", " ", " ", " ", " "], [" ", " ", " ", " ", " ", " ", " "], [" ", " ", " ", " ", " ", " ", " "], [" ", " ", " ", " ", " ", " ", " "], [" ", " ", " ", " ", " ", " ", " "], [" ", " ", " ", " ", " ", " ", " "], [" ", " ", " ", " ", " ", " ", " "]];
 var columnNums = [5, 5, 5, 5, 5, 5, 5];
 var turn = 1;
 var winner = " ";
 var gameOn = true;
-draw = function(p) {
+
+function draw(p) {
+    p.noStroke();
     if (gameOn){
         p.background(0, 0, 255);
         p.fill(197, 237, 197);
@@ -39,9 +40,9 @@ draw = function(p) {
             gameOn = false;
         }
     }
-};
+}
 
-var placeDisk = function(row){
+function placeDisk(row) {
     if (turn % 2 === 1){
         holes[row][columnNums[row]] = "R";
     } else {
@@ -49,10 +50,11 @@ var placeDisk = function(row){
     } 
     turn += 1;
     columnNums[row] -= 1;
-};
-mouseClicked = function(x, y){
+}
+
+function mouseClicked(x, y) {
     placeDisk(Math.floor(x/55));
-for (var i = 0; i <= 6; i++){
+    for (var i = 0; i <= 6; i++){
         for (var j = 0; j <= 5; j++){
             if (j >= 3){
                 if (holes[i][j] === holes[i][j-1] && holes[i][j-1] === holes[i][j-2] && holes[i][j-2] === holes[i][j-3] && holes[i][j] !== " "){
@@ -77,7 +79,8 @@ for (var i = 0; i <= 6; i++){
             }
         }
     }
-};
+}
+
 function keyPressed() {
     //do nothing
 }
