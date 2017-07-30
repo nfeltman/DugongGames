@@ -1,0 +1,297 @@
+let print_int x = print_string (string_of_int x);;
+let print_bool b = print_string (string_of_bool b);;
+let rec print_list_interior l =
+    match l with
+      [] -> ()
+    | [x] -> print_int x
+    | x::xs -> print_int x; print_string ";"; print_list_interior xs
+;;
+let print_list l =
+    print_string "["; print_list_interior l; print_string "]"
+;;
+
+
+module type Array = sig
+ type 'a arr
+ val make : int -> 'a -> 'a arr
+ val length : 'a arr -> int
+ val get : 'a arr -> int -> 'a
+ val set : 'a arr -> int -> 'a -> 'a arr 
+ val printarr : ('a -> unit) -> 'a arr -> unit
+ val map : ('a -> 'b) -> 'a arr -> 'b arr
+ val fold_left : ('a -> 'b -> 'b) -> 'b -> 'a arr -> 'b
+ val fold_right : ('a -> 'b -> 'b) -> 'b -> 'a arr -> 'b
+ 
+end
+;;
+
+(*
+
+length -- O(1)
+get, set -- O(log n)
+map -- O(n)
+
+*)
+module TreeBackedArray = 
+struct
+  (* 
+      if tree has 1 element, it's a leaf
+      if tree has even number of elements n, then n/2 elements are in the left subtree and n/2 elements are in the right subtree
+      if tree has odd number of elements n, then (n/2)-(0.5) elements are in the left subtree and (n/2)+(0.5) elements are in the right subtree
+  *)
+  type 'a tree = Leaf of 'a
+               | Branch of 'a tree * 'a tree
+  
+  type 'a arr = int * 'a tree
+  
+  let rec make_helper length num = 
+      if length > 1 then 
+          let length_left = length / 2 in
+          Branch (make_helper length_left num, make_helper (length - length_left) num) 
+      else Leaf num
+      
+  let make length num = (length, make_helper (length) num)
+      
+  let length (l, _) = l
+  
+  let rec lookup t size index = 
+      match t with
+        Leaf i -> i
+      | Branch (t1, t2) -> 
+          let size_left = size / 2 in
+          if index >= size_left then lookup t2 (size-size_left) (index-size_left) else lookup t1 size_left index
+          
+  let get (size,t) i = lookup t size (i-1)
+  
+  let rec change_tree_elem t size index changed = 
+      match t with
+        Leaf i -> if index = 0 then Leaf changed else Leaf i
+      | Branch (t1, t2) -> 
+          let size_left = size / 2 in
+          if index >= size_left 
+          then Branch (t1, change_tree_elem t2 (size-size_left) (index-size_left) changed)
+          else Branch (change_tree_elem t1 size_left index changed, t2)
+          
+  let set (size,t) index changed = (size, change_tree_elem t size (index-1) changed)
+  
+  let rec print_tree print_element tree = 
+      match tree with
+          Leaf i -> print_element i
+      |   Branch (t1,t2) -> 
+              print_tree print_element t1; print_string ","; print_tree print_element t2
+  
+  let printarr print_element (l,a) = print_string "["; print_tree print_element a; print_string "]"
+  
+  let rec tree_map f t =  
+      match t with
+        Leaf i -> Leaf (f i)
+      | Branch (t1,t2) -> Branch (tree_map f t1, tree_map f t2)
+      
+  let map f (l,t) = (l, tree_map f t)
+  
+  let rec fold_left_tree func acc tree = match tree with
+      Leaf i -> func i acc
+  |   Branch (t1, t2) -> fold_left_tree func (fold_left_tree func acc t1) t2
+      
+  let fold_left func acc (_,tree) = fold_left_tree func acc tree
+  
+  let rec fold_right_tree func acc tree = match tree with
+      Leaf i -> func i acc
+  |   Branch (t1, t2) -> fold_right_tree func (fold_right_tree func acc t2) t1
+      
+  let fold_right func acc (_,tree) = fold_right_tree func acc tree
+
+end;;
+
+
+let foldi_left func acc arr = fst(TreeBackedArray.fold_left (fun a (accu,index) -> func (a,index+1) accu) (acc,1) arr);;
+
+let sum arr = foldi_left (fun (index,x) acc -> x+acc) 0 arr;;
+
+module type Matrix = 
+sig
+     type 'a mat
+     val make : int * int -> 'a -> 'a mat
+     val size : 'a mat -> int * int
+     val get : 'a mat -> int * int -> 'a
+     val set : 'a mat -> int * int -> 'a -> 'a mat 
+     val printarr : ('a -> unit) -> 'a mat -> unit
+     val map : ('a -> 'b) -> 'a mat -> 'b mat
+     (* val foldi_2D : (int * int * 'a -> 'b -> 'b) -> 'b -> 'a mat -> 'b *)
+end;;
+
+
+module A : Array = TreeBackedArray;;
+
+module MatrixFromArray : Matrix =
+struct
+    type 'a mat = int * int * ('a A.arr) A.arr
+    
+    let make (width,height) num = (width, height, A.make height (A.make width num))
+    
+    let size (l,h,_) = (l,h)
+    
+    let get (_,_,matrix) (row,column) = A.get (A.get matrix column) row
+    
+    let set (w,h,matrix) (row,column) changed = (w,h,A.set matrix column (A.set (A.get matrix column) row changed))
+    
+    let printarr print_elem (_,_,matrix) = A.printarr (A.printarr print_elem) matrix
+    
+    let map func (w,h,matrix) = (w,h,A.map (A.map func) matrix)
+
+    (* let foldi_2D func acc matrix = foldi_left (fun (row,y) accu -> foldi_left (fun (elem,x) accumu -> func (x,y,elem) accumu) accu row) acc matrix *)
+
+end;;
+
+
+(* GAMES! *)
+module type TwoPlayerGame = 
+sig
+
+type game_state
+type move
+type termination_state = Win1 | Win2 | Draw
+type transition = NotDone of move list (* list must be non-empty *) 
+                | Done of termination_state
+
+val initial_state : game_state
+
+(*
+    Must only generate valid moves from the current game state.
+*)
+val get_moves : game_state -> transition
+
+(* 
+    Must be called with a valid move (created by get_moves).
+*)
+val make_move : game_state -> move -> game_state
+val state_to_string : game_state -> string
+val move_to_string : move -> bool -> string
+
+end;;
+
+module NimGame = 
+
+struct
+type game_state = int*bool
+
+type move = Take1
+          | Take2
+          
+type termination_state = Win1 | Win2 | Draw
+
+type transition = NotDone of move list 
+                | Done of termination_state
+                
+let initial_state = (10, true)
+
+let get_moves (tokens,turn) = if tokens <= 0 then Done (if turn then Win2 else Win1)
+                              else if tokens = 1 then NotDone [Take1] 
+                              else NotDone [Take1; Take2]
+                              
+let make_move (tokens,turn) tokensTaken = (tokens - (match tokensTaken with Take1 -> 1 | Take2 -> 2), not turn)
+
+let state_to_string (tokens,turn) = " " ^ (string_of_int tokens) ^ " tokens left" ^ (if turn = true then " --- Player 1's turn " else " --- Player 2's turn")
+
+let move_to_string tokensTaken turn = match tokensTaken with Take1 -> " 1 token is taken from the pile!" | Take2 -> " 2 tokens are taken from the pile!"
+
+end;;
+
+module NimGameSealed : TwoPlayerGame = NimGame;;
+
+
+module TicTacToe = 
+
+struct
+
+type square = X
+            | O
+            | E (* E stands for Empty *)
+
+type game_state = (square MatrixFromArray.mat)*bool
+
+type move = int * int
+          
+type termination_state = Win1 | Win2 | Draw
+
+type transition = NotDone of move list 
+                | Done of termination_state
+                
+
+let initial_state = (MatrixFromArray.make (3,3) E, true)
+
+let rec available_moves board = 
+    let moves = if MatrixFromArray.get board (3,3) = E then [(3,3)] else [] in
+    let moves = if MatrixFromArray.get board (2,3) = E then ((2,3)::moves) else moves in 
+    let moves = if MatrixFromArray.get board (1,3) = E then ((1,3)::moves) else moves in 
+    let moves = if MatrixFromArray.get board (3,2) = E then ((3,2)::moves) else moves in 
+    let moves = if MatrixFromArray.get board (2,2) = E then ((2,2)::moves) else moves in 
+    let moves = if MatrixFromArray.get board (1,2) = E then ((1,2)::moves) else moves in 
+    let moves = if MatrixFromArray.get board (3,1) = E then ((3,1)::moves) else moves in 
+    let moves = if MatrixFromArray.get board (2,1) = E then ((2,1)::moves) else moves in 
+    if MatrixFromArray.get board (1,1) = E then ((1,1)::moves) else moves
+
+let all3 (f : int -> bool) = f 1 && f 2 && f 3
+let some3 (f : int -> bool) = f 1 || f 2 || f 3
+
+let has_won board letter = 
+    some3 (function x -> all3 (function y -> MatrixFromArray.get board (x,y) = letter)) || 
+    some3 (function y -> all3 (function x -> MatrixFromArray.get board (x,y) = letter)) || 
+    all3 (function x -> MatrixFromArray.get board (x,x) = letter) || 
+    all3 (function x -> MatrixFromArray.get board (x,4-x) = letter)
+
+let get_moves (board,turn) = 
+					  let x_won = has_won board X in
+					  let o_won = has_won board O in
+					  if x_won then Done Win1
+                      else if o_won then Done Win2
+                  	  else if (all3 (function x -> all3 (function y -> not (MatrixFromArray.get board (x,y) = E)))) && (not x_won) && (not o_won) then Done Draw
+                      else NotDone (available_moves board)
+                      
+let make_move (board,turn) square = (MatrixFromArray.set board square (if turn then X else O), not turn)
+
+let square_to_string square = 
+match square with
+    X -> "X"
+|   O -> "O"
+|   E -> " "
+
+let concat3 f s = f 1 ^ s ^ f 2 ^ s ^ f 3
+
+let state_to_string (board,turn) = 
+    concat3 (function x -> 
+        concat3 (function y -> 
+            " " ^ square_to_string (MatrixFromArray.get board (y,x)) ^ " "
+        ) "|"
+    ) "\n-----------\n"
+
+let num_to_string num = if num = 1 then "first" else if num = 2 then "second" else if num = 3 then "third" else "forty-second"
+
+let move_to_string square turn = (if turn then "\n X goes in " else "\n O goes in ")^(match square with 
+    (int1,int2) -> num_to_string int1 ^ " row, " ^ num_to_string int2 ^ " column!")
+
+end;;
+
+module TicTacToeSealed : TwoPlayerGame = TicTacToe;;
+
+(*       10        20        30        40        50        60        70        80        90        100       110       120       130       140       150       160*)
+
+let rec game_loop (board,turn) = 
+	let end_state = TicTacToe.get_moves (board,turn) in
+	print_endline (TicTacToe.state_to_string (board,turn));
+	match end_state with
+		TicTacToe.Done TicTacToe.Win1 -> print_endline "X wins!"
+	|   TicTacToe.Done TicTacToe.Win2 -> print_endline "O wins!"
+	| 	TicTacToe.Done TicTacToe.Draw -> print_endline "It's a tie!"
+	|   TicTacToe.NotDone move_list -> 
+			let user_move = read_line() in
+			let int_move = int_of_string user_move in 
+				if List.mem (((int_move-1) mod 3)+1, (int_move-1)/3+1) move_list then
+				let new_board (move) = game_loop (TicTacToe.make_move (board,turn) (move)) in 
+				new_board (((int_move-1) mod 3)+1, (int_move-1)/3+1)
+			else (print_endline "Your move is invalid. Try again."; game_loop (board,turn));;
+
+
+let main () = game_loop TicTacToe.initial_state;;
+
+main()
